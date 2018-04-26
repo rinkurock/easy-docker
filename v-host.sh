@@ -33,8 +33,9 @@ createVirtualHost(){
   wprint 'Replacing server_name'
   sed -i -e "s,--url--,$url,g" $url.conf
 
+  NEW_DIR="/var/www/"$directory
   wprint 'Replacing server root'
-  sed -i -e "s,--directory--,$directory,g" $url.conf
+  sed -i -e "s,--directory--,$NEW_DIR,g" $url.conf
   rm $url.conf-e
   askCopyConfigToDockerNginx
 
@@ -57,10 +58,8 @@ copyConfigToDockerNginx(){
   sudo echo "127.0.0.1       $url" >> /etc/hosts
 
   wprint 'Changed Hosts files!'
-
-  wprint 'Done :)  Enjoy :)'
-
-
+  wprint "Go To: $url"
+  wprint 'Enjoy :)'
 }
 askCopyConfigToDockerNginx(){
   wprint "Do you want to copy ngnix virtual host file (y/n)?"
@@ -78,7 +77,8 @@ askCopyConfigToDockerNginx(){
 
 callConfigaration(){
 
-  pprint "path into ~/your-project-path directory as(/var/www/your-project-path)?"
+  pprint "path into .env APPLICATION path  directory as"
+  pprint "(your-project-directory/public) ?"
   read directory
 
   wprint "PS: chrome does not support .dev domain any more !"
@@ -99,7 +99,7 @@ callConfigaration(){
   fi
 }
 
-pprint "Do you want to new ngnix virtual host file?" \n
+pprint "Do you want to new ngnix virtual host file? (y/n)" \n
   read answer
   if echo "$answer" | grep -iq "^y" ;then
     callConfigaration

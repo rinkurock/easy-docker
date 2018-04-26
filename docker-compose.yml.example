@@ -70,21 +70,6 @@ services:
       networks:
         - backend
 
-### postgres Setup ############################################
-
-    postgres:
-        image: postgres:10.1
-        ports:
-            - 5432:5432
-        volumes:
-            - ./backup/postgres/database:/var/lib/postgresql/data
-        environment:
-            - POSTGRES_USER=${POSTGRES_USER}
-            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-            - POSTGRES_DB=${POSTGRES_DB}
-        networks:
-            - backend
-
 ### Adminer Setup ############################################
 
     adminer:
@@ -96,61 +81,78 @@ services:
 #          - postgres:db
         networks:
           - backend
+
+
+### postgres Setup ############################################
+
+    # postgres:
+    #     image: postgres:10.1
+    #     ports:
+    #         - 5432:5432
+    #     volumes:
+    #         - ./backup/postgres/database:/var/lib/postgresql/data
+    #     environment:
+    #         - POSTGRES_USER=${POSTGRES_USER}
+    #         - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    #         - POSTGRES_DB=${POSTGRES_DB}
+    #     networks:
+    #         - backend
+
 ### Redis Setup ############################################
 
-    redis:
-        image: redis:latest
-        ports:
-          - ${REDEIS_PORT}:6379
-        volumes:
-          - ./backup/redis/data:/data
-        networks:
-          - backend
+    # redis:
+    #     image: redis:latest
+    #     ports:
+    #       - ${REDEIS_PORT}:6379
+    #     volumes:
+    #       - ./backup/redis/data:/data
+    #     networks:
+    #       - backend
 
 ### Mongo Setup ############################################
 
-    mongo:
-      image: mongo:3
-      ports:
-      - 27017:27017
-      volumes:
-      - ./backup/mongo:/data/db
-      networks:
-      - backend
+    # mongo:
+    #   image: mongo:3
+    #   ports:
+    #   - 27017:27017
+    #   volumes:
+    #   - ./backup/mongo:/data/db
+    #   networks:
+    #   - backend
 
 ### consul Setup ############################################
 
-    consul:
-      image: bitnami/consul
-      ports:
-        - 8500:8500
-      volumes:
-        - ./backup/consul/data:/bitnami
-      networks:
-        - backend
+    # consul:
+    #   image: bitnami/consul
+    #   ports:
+    #     - 8500:8500
+    #   volumes:
+    #     - ./backup/consul/data:/bitnami
+    #   networks:
+    #     - backend
 
-### consul Setup ############################################
+### rabbitmq Setup ############################################
 
-    rabbit:
-      image: "rabbitmq:3-management"
-      hostname: "rabbitmq"
-      environment:
-        RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
-        RABBITMQ_DEFAULT_USER: "rabbitmq"
-        RABBITMQ_DEFAULT_PASS: "rabbitmq"
-        RABBITMQ_DEFAULT_VHOST: "/"
-      ports:
-        - "15672:15672"
-        - "5672:5672"
-      labels:
-        NAME: "rabbitmq"
-      volumes:
-        - ./backup/rabbitmq:/var/lib/rabbitmq
-        #- "./docker/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins"
-        #- "./docker/rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro"
-        #- "./docker/rabbitmq/autocluster-0.4.1.ez:/usr/lib/rabbitmq/lib/rabbitmq_server-3.5.5/plugins/autocluster-0.4.1.ez"
-      networks:
-        - backend
+    # rabbit:
+    #   image: "rabbitmq:3-management"
+    #   hostname: "rabbitmq"
+    #   environment:
+    #     RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+    #     RABBITMQ_DEFAULT_USER: "rabbitmq"
+    #     RABBITMQ_DEFAULT_PASS: "rabbitmq"
+    #     RABBITMQ_DEFAULT_VHOST: "/"
+    #   ports:
+    #     - "15672:15672"
+    #     - "5672:5672"
+    #   labels:
+    #     NAME: "rabbitmq"
+    #   volumes:
+    #     - ./backup/rabbitmq:/var/lib/rabbitmq
+    #     #- "./docker/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins"
+    #     #- "./docker/rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro"
+    #     #- "./docker/rabbitmq/autocluster-0.4.1.ez:/usr/lib/rabbitmq/lib/rabbitmq_server-3.5.5/plugins/autocluster-0.4.1.ez"
+    #   networks:
+    #     - backend
 
 ### Networks Setup ############################################
 
