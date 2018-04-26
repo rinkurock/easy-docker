@@ -1,5 +1,5 @@
 # Easy Docker
-An easy way to maintain PHP version with some essential config like as virtual Host, Mysql, Redis and more. It's only for locahost :)
+An easy way to maintain PHP version with some essential config like as virtual Host, Mysql, Redis and more. It's only for localhost :)
 
 ## Getting started
 
