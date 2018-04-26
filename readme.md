@@ -30,7 +30,7 @@ nano .env
 
 6. Run docker-compose
 ```Bash
-docker-compose up -b
+docker-compose up -d
 ```
 
 7. Go to <http://localhost:9099> on browser
