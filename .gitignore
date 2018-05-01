@@ -3,3 +3,4 @@ logs
 .idea
 .DS_Store
 docker-compose.yml
+.vscode
