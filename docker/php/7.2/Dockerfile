@@ -57,6 +57,9 @@ RUN docker-php-ext-install tokenizer \
     #&& docker-php-ext-install simplexml \
     && docker-php-ext-install ctype \
     && docker-php-ext-install json
+
+ RUN docker-php-ext-install bcmath
+
 #composer setup
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
