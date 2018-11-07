@@ -6,48 +6,47 @@ BLUE='\033[0;36m'
 GREEN='\033[0m' # No Color
 BOLD='\033[1m'
 END='\e[0m'
-pprint(){
-  printf "\n${GREEN}${BOLD}$1${END}\n"
+ROOT_PATH=$PWD
+
+pprint() {
+    printf "\n${GREEN}${BOLD}$1${END}\n"
 }
 
-wprint(){
-  printf "\n${BLUE}${BOLD}$1${END}\n"
+wprint() {
+    printf "\n${BLUE}${BOLD}$1${END}\n"
 }
 
-eprint(){
-  printf "\n${RED}${BOLD}$1${END}\n"
+eprint() {
+    printf "\n${RED}${BOLD}$1${END}\n"
 }
 
+createVirtualHost() {
+    wprint "Coping \`example.dev file\` to \`$url.conf\`"
+    cp ${ROOT_PATH}/config/ngnix/template/example.dev.conf ${ROOT_PATH}/config/ngnix/sites/${url}.conf
 
-#pprint pprint
+    cd  config/ngnix/sites
+    wprint 'Replacing server_name'
+    sed -i -e "s,--url--,$url,g" ${url}.conf
 
-#wprint wprint
+    NEW_DIR="/var/www/"${directory}
+    wprint 'Replacing server root'
+    sed -i -e "s,--directory--,$NEW_DIR,g" ${url}.conf
 
-#eprint eprint
-
-createVirtualHost(){
-  wprint "Coping  example file  to $url.conf"
-  cp config/ngnix/template/example.dev.conf config/ngnix/sites/$url.conf
-
-  cd  config/ngnix/sites
-  wprint 'Replacing server_name'
-  sed -i -e "s,--url--,$url,g" $url.conf
-
-  NEW_DIR="/var/www/"$directory
-  wprint 'Replacing server root'
-  sed -i -e "s,--directory--,$NEW_DIR,g" $url.conf
-  rm $url.conf-e
-  askCopyConfigToDockerNginx
-
+    tmp_file="$url.conf-e"
+    if [[ -f "$tmp_file" ]]; then
+        rm ${tmp_file}
+    fi
+    askCopyConfigToDockerNginx
 }
+
 copyConfigToDockerNginx(){
-	parent_path=$( cd ../../.. "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
-    wprint "$parent_path"
-	for entry in "$search_dir"$parent_path/config/ngnix/sites/*
+#	parent_path=$( cd ../../.. "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+    wprint "${ROOT_PATH}"
+	for entry in "$search_dir"${ROOT_PATH}/config/ngnix/sites/*
 	do
-	    #echo "$search_dir"
+	    echo "$search_dir"
   	    wprint "$entry"
-        cp "$entry" $parent_path/docker/nginx/sites
+        cp "$entry" ${ROOT_PATH}/docker/nginx/sites
 	done
 
 	wprint 'Copied successfully!'
@@ -72,38 +71,31 @@ askCopyConfigToDockerNginx(){
   fi
 }
 
+callConfiguration() {
+    pprint "Enter relative path according to .env \`APPLICATION\` config such as (your-project-directory/public)?"
+    read directory
 
+    wprint "PS: chrome does not support .dev domain any more !"
+    echo web url\(example.local\)?
+    read url
 
+    wprint "Project Path: ${ROOT_PATH}/$directory"
+    wprint "Url: $url"
 
-callConfigaration(){
-
-  pprint "path into .env APPLICATION path  directory as"
-  pprint "(your-project-directory/public) ?"
-  read directory
-
-  wprint "PS: chrome does not support .dev domain any more !"
-  echo web url\(example.local \) ?
-  read url
-
-  wprint "Path: $directory"
-  wprint "Url url: $url"
-
-
-  pprint "Are you want to continue (y/n)?"
-  read answer
-  if echo "$answer" | grep -iq "^y" ;then
-    createVirtualHost
-  else
-    eprint exit
+    pprint "Are you want to continue (y/n)?"
+    read answer
+    if echo "$answer" | grep -iq "^y" ;then
+        createVirtualHost
+    else
+        eprint exit
     exit
-  fi
+    fi
 }
 
-pprint "Do you want to new ngnix virtual host file? (y/n)" \n
-  read answer
-  if echo "$answer" | grep -iq "^y" ;then
-    callConfigaration
-  else
-  eprint No
-
+pprint "Do you want to new ngnix virtual host file? (y/n)"
+read answer
+if echo "$answer" | grep -iq "^y"; then
+    callConfiguration
+else
+    eprint No
 fi
