@@ -39,7 +39,7 @@ createVirtualHost() {
     askCopyConfigToDockerNginx
 }
 
-copyConfigToDockerNginx(){
+copyConfigToDockerNginx() {
 #	parent_path=$( cd ../../.. "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
     wprint "${ROOT_PATH}"
 	for entry in "$search_dir"${ROOT_PATH}/config/ngnix/sites/*
@@ -48,27 +48,26 @@ copyConfigToDockerNginx(){
   	    wprint "$entry"
         cp "$entry" ${ROOT_PATH}/docker/nginx/sites
 	done
-
 	wprint 'Copied successfully!'
-  docker restart docker_nginx_1
 
-  wprint 'NGNIX Restarted!'
+    docker restart $(echo ${ROOT_PATH} | sed 's:.*/::' | sed 's/[^a-zA-Z]//g')_nginx_1
+    wprint 'NGNIX Restarted!'
 
-  sudo echo "127.0.0.1       $url" >> /etc/hosts
-
-  wprint 'Changed Hosts files!'
-  wprint "Go To: $url"
-  wprint 'Enjoy :)'
+    sudo echo "127.0.0.1        $url" >> /etc/hosts
+    wprint 'Changed Hosts files!'
+    wprint "Go To: $url"
+    wprint 'Enjoy :)'
 }
-askCopyConfigToDockerNginx(){
-  wprint "Do you want to copy ngnix virtual host file (y/n)?"
-  read answer
-  if echo "$answer" | grep -iq "^y" ;then
-    copyConfigToDockerNginx
-  else
-    echo No
-    exit
-  fi
+
+askCopyConfigToDockerNginx() {
+    wprint "Do you want to copy ngnix virtual host file (y/n)?"
+    read answer
+    if echo "$answer" | grep -iq "^y" ;then
+        copyConfigToDockerNginx
+    else
+        echo No
+        exit
+    fi
 }
 
 callConfiguration() {
