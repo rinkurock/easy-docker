@@ -50,7 +50,7 @@ copyConfigToDockerNginx() {
 	done
 	wprint 'Copied successfully!'
 
-    docker restart $(echo ${ROOT_PATH} | sed 's:.*/::' | sed 's/[^a-zA-Z]//g')_nginx_1
+    docker restart $(docker-compose ps -q nginx | awk '{print $1}')
     wprint 'NGNIX Restarted!'
 
     sudo echo "127.0.0.1        $url" >> /etc/hosts
