@@ -24,7 +24,7 @@ createVirtualHost() {
     wprint "Coping \`example.dev file\` to \`$url.conf\`"
     cp ${ROOT_PATH}/config/ngnix/template/example.dev.conf ${ROOT_PATH}/config/ngnix/sites/${url}.conf
 
-    cd  config/ngnix/sites
+    cd config/ngnix/sites
     wprint 'Replacing server_name'
     sed -i -e "s,--url--,$url,g" ${url}.conf
 
@@ -36,22 +36,21 @@ createVirtualHost() {
     if [[ -f "$tmp_file" ]]; then
         rm ${tmp_file}
     fi
+
+    cd ${ROOT_PATH}
     askCopyConfigToDockerNginx
 }
 
 copyConfigToDockerNginx() {
 #	parent_path=$( cd ../../.. "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
-    wprint "${ROOT_PATH}"
-	for entry in "$search_dir"${ROOT_PATH}/config/ngnix/sites/*
+	for entry in ${ROOT_PATH}/config/ngnix/sites/*
 	do
-	    echo "$search_dir"
-  	    wprint "$entry"
         cp "$entry" ${ROOT_PATH}/docker/nginx/sites
 	done
 	wprint 'Copied successfully!'
 
-    docker restart $(echo ${ROOT_PATH} | sed 's:.*/::' | sed 's/[^a-zA-Z]//g')_nginx_1
-    wprint 'NGNIX Restarted!'
+    docker restart $(docker-compose ps -q nginx | awk '{print $1}')
+    wprint 'NGINX Restarted!'
 
     sudo echo "127.0.0.1        $url" >> /etc/hosts
     wprint 'Changed Hosts files!'
@@ -75,7 +74,7 @@ callConfiguration() {
     read directory
 
     wprint "PS: chrome does not support .dev domain any more !"
-    echo web url\(example.local\)?
+    echo web url \(example.local\)?
     read url
 
     wprint "Project Path: ${ROOT_PATH}/$directory"
@@ -87,7 +86,7 @@ callConfiguration() {
         createVirtualHost
     else
         eprint exit
-    exit
+        exit
     fi
 }
 
