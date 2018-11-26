@@ -44,7 +44,9 @@ services:
     php:
         build: ./docker/php/${PHP_VERSION}
         volumes_from:
-           - applications
+            - applications
+#        volumes:
+#            - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
         links:
             - mysql
 #           - redis

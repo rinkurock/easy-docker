@@ -4,3 +4,4 @@ logs
 .DS_Store
 docker-compose.yml
 .vscode
+/docker/php/custom.ini
