@@ -8,6 +8,8 @@ FROM php:5.5.34-fpm
 
 MAINTAINER Syed Abidur Rahman <aabid048@gmail.com>
 
+RUN printf "deb http://archive.debian.org/debian/ jessie main\ndeb-src http://archive.debian.org/debian/ jessie main\ndeb http://security.debian.org jessie/updates main\ndeb-src http://security.debian.org jessie/updates main" > /etc/apt/sources.list
+
 #
 #--------------------------------------------------------------------------
 # Software's Installation
@@ -33,7 +35,8 @@ RUN apt-get update \
     nano \
     zip unzip \
     libssh2-1-dev \
-  && rm -rf /var/lib/apt/lists/*
+    openssl \
+    libxml2-dev
 
 
 # Install the PHP pdo_mysql extention
