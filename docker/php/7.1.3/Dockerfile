@@ -66,7 +66,7 @@ RUN docker-php-ext-install tokenizer \
 
 
 # Install the mysql-client for mysqldump
-RUN apt-get update \
+RUN apt-get -o Acquire::Check-Valid-Until=false update \
   && apt-get install -y mysql-client
 
 
