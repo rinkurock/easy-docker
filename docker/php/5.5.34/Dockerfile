@@ -52,10 +52,23 @@ RUN docker-php-ext-install pdo_mysql \
 
 RUN docker-php-ext-install -j$(nproc) mcrypt mbstring pdo
 
-RUN pecl install -o -f redis \
-  &&  rm -rf /tmp/pear \
-  &&  echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
 
+# Install the redis extension
+RUN pecl install -o -f redis \
+  && rm -rf /tmp/pear \
+  && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
+
+
+# Install the mysql-client for mysqldump
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends apt-utils mysql-client
+
+
+# Composer setup
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+
+# xDebug installation
 RUN yes | pecl install xdebug-2.5.5 \
   && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
   && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
