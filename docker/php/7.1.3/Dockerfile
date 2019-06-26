@@ -4,9 +4,13 @@
 #--------------------------------------------------------------------------
 #
 
-FROM php:7.2-fpm
+FROM php:7.1.3-fpm
 
-MAINTAINER Rinku Rock <rinku.arnob@gmail.com>
+MAINTAINER Syed Abidur Rahman <aabid048@gmail.com>
+
+RUN echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie-backports main" > /etc/apt/sources.list.d/jessie-backports.list
+
+RUN sed -i '/deb http:\/\/deb.debian.org\/debian jessie-updates main/d' /etc/apt/sources.list
 
 #
 #--------------------------------------------------------------------------
@@ -18,7 +22,7 @@ MAINTAINER Rinku Rock <rinku.arnob@gmail.com>
 
 # Install "curl", "libmemcached-dev", "libpq-dev", "libjpeg-dev",
 #         "libpng-dev", "libfreetype6-dev", "libssl-dev", "libmcrypt-dev",
-RUN apt-get update \
+RUN apt-get -o Acquire::Check-Valid-Until=false update \
   && apt-get install -y --no-install-recommends \
     curl \
     libmemcached-dev \
@@ -49,20 +53,21 @@ RUN docker-php-ext-install pdo_mysql \
   && docker-php-ext-install gd
 
 
-# Configure the PHP mcrypt
-RUN yes | pecl install mcrypt-1.0.2 \
-  && docker-php-ext-enable mcrypt
-
-
 # Install various PHP extentions
-RUN docker-php-ext-install bcmath \
-  #&& docker-php-ext-install simplexml \
+RUN docker-php-ext-install tokenizer \
+  && docker-php-ext-install -j$(nproc) mcrypt \
+  && docker-php-ext-install -j$(nproc) pdo \
+  && docker-php-ext-install mbstring \
+    #&& docker-php-ext-install simplexml \
+  && docker-php-ext-install ctype \
+  && docker-php-ext-install json \
+  && docker-php-ext-install bcmath \
   && docker-php-ext-install sysvsem
 
 
 # Install the mysql-client for mysqldump
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends apt-utils mysql-client
+RUN apt-get -o Acquire::Check-Valid-Until=false update \
+  && apt-get install -y mysql-client
 
 
 # Composer setup

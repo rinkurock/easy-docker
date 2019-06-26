@@ -8,6 +8,8 @@ FROM php:5.5.34-fpm
 
 MAINTAINER Syed Abidur Rahman <aabid048@gmail.com>
 
+RUN printf "deb http://archive.debian.org/debian/ jessie main\ndeb-src http://archive.debian.org/debian/ jessie main\ndeb http://security.debian.org jessie/updates main\ndeb-src http://security.debian.org jessie/updates main" > /etc/apt/sources.list
+
 #
 #--------------------------------------------------------------------------
 # Software's Installation
@@ -33,26 +35,44 @@ RUN apt-get update \
     nano \
     zip unzip \
     libssh2-1-dev \
-  && rm -rf /var/lib/apt/lists/*
+    openssl \
+    libxml2-dev
 
 
-
-  # Install the PHP pdo_mysql extention
-  RUN docker-php-ext-install pdo_mysql \
+# Install the PHP pdo_mysql extention
+RUN docker-php-ext-install pdo_mysql \
   # Install the PHP pdo_pgsql extention
   && docker-php-ext-install pdo_pgsql \
   # Install the PHP gd library
   && docker-php-ext-configure gd \
     --enable-gd-native-ttf \
     --with-jpeg-dir=/usr/lib \
-    --with-freetype-dir=/usr/include/freetype2 && \
-    docker-php-ext-install gd
+    --with-freetype-dir=/usr/include/freetype2 \
+  && docker-php-ext-install gd
 
 RUN docker-php-ext-install -j$(nproc) mcrypt mbstring pdo
 
+
+# Install the redis extension
 RUN pecl install -o -f redis \
-    &&  rm -rf /tmp/pear \
-    &&  echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
+  && rm -rf /tmp/pear \
+  && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
+
+
+# Install the mysql-client for mysqldump
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends apt-utils mysql-client
+
+
+# Composer setup
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+
+# xDebug installation
+RUN yes | pecl install xdebug-2.5.5 \
+  && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
+  && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
+  && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini
 
 #
 #--------------------------------------------------------------------------
@@ -62,8 +82,7 @@ RUN pecl install -o -f redis \
 
 # Clean up
 USER root
-RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Set default work directory
 WORKDIR /var/www
