@@ -6,20 +6,23 @@ services:
 
     applications:
       image: tianon/true
+      container_name: applications
       volumes:
+        - /Users/n3m0/.ssh:/root/.ssh
         - ${APPLICATION}:/var/www
 
 ### nginx Setup for virtual host ############################################
     nginx:
+      container_name: nginx
       build:
         context: ./docker/nginx/
         args:
           - PHP_UPSTREAM=php
+      volumes_from:
+        - applications
       volumes:
         - ./logs/nginx/:/var/log/nginx
         - ./docker/nginx/sites:/etc/nginx/sites-available
-      volumes_from:
-              - applications
       ports:
         - "80:80"
         - "443:443"
@@ -43,10 +46,9 @@ services:
 ### php Setup ############################################
     php:
         build: ./docker/php/${PHP_VERSION}
+        container_name: php
         volumes_from:
-            - applications
-#        volumes:
-#            - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+           - applications
         links:
             - mysql
 #           - redis
@@ -57,6 +59,7 @@ services:
 ### mysql Setup ############################################
 
     mysql:
+      container_name: mysql
       build:
         context: ./docker/mysql
       environment:
@@ -65,7 +68,7 @@ services:
         - MYSQL_PASSWORD=${DB_PASSWORD}
         - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       volumes:
-        - ./backup/data/mysql:/var/lib/mysql
+        - ./backup/mysql:/var/lib/mysql
         - ./docker/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       ports:
         - "${DB_PORT}:3306"
@@ -75,6 +78,7 @@ services:
 ### Adminer Setup ############################################
 
     adminer:
+        container_name: adminer
         image: adminer:4.3.1-standalone
         ports:
           - ${ADMINER_PORT}:8080
@@ -88,6 +92,7 @@ services:
 ### postgres Setup ############################################
 
     # postgres:
+    #     container_name: postgres
     #     image: postgres:10.1
     #     ports:
     #         - 5432:5432
@@ -102,18 +107,20 @@ services:
 
 ### Redis Setup ############################################
 
-    # redis:
-    #     image: redis:latest
-    #     ports:
-    #       - ${REDEIS_PORT}:6379
-    #     volumes:
-    #       - ./backup/redis/data:/data
-    #     networks:
-    #       - backend
+    redis:
+       container_name: redis
+       image: redis:latest
+       ports:
+         - ${REDEIS_PORT}:6379
+       volumes:
+         - ./backup/redis/data:/data
+       networks:
+         - backend
 
 ### Mongo Setup ############################################
 
     # mongo:
+    #   container_name: mongo
     #   image: mongo:3
     #   ports:
     #   - 27017:27017
@@ -124,35 +131,62 @@ services:
 
 ### consul Setup ############################################
 
-    # consul:
-    #   image: bitnami/consul
-    #   ports:
-    #     - 8500:8500
-    #   volumes:
-    #     - ./backup/consul/data:/bitnami
-    #   networks:
-    #     - backend
+#    consul:
+#      container_name: consul  
+#      image: bitnami/consul
+#      ports:
+#        - 8500:8500
+#      volumes:
+#        - ./backup/consul/data:/bitnami
+#      networks:
+#        - backend
 
 ### rabbitmq Setup ############################################
 
-    # rabbit:
-    #   image: "rabbitmq:3-management"
-    #   hostname: "rabbitmq"
-    #   environment:
-    #     RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
-    #     RABBITMQ_DEFAULT_USER: "rabbitmq"
-    #     RABBITMQ_DEFAULT_PASS: "rabbitmq"
-    #     RABBITMQ_DEFAULT_VHOST: "/"
+#    rabbit:
+#      container_name: rabbit
+#      image: "rabbitmq:3-management"
+#      hostname: "rabbitmq"
+#      environment:
+#        RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+#        RABBITMQ_DEFAULT_USER: "rabbitmq"
+#        RABBITMQ_DEFAULT_PASS: "rabbitmq"
+#        RABBITMQ_DEFAULT_VHOST: "/"
+#      ports:
+#        - "15672:15672"
+#        - "5672:5672"
+#      labels:
+#        NAME: "rabbitmq"
+#      volumes:
+#        - ./backup/rabbitmq:/var/lib/rabbitmq
+#        #- "./docker/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins"
+#        #- "./docker/rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro"
+#        #- "./docker/rabbitmq/autocluster-0.4.1.ez:/usr/lib/rabbitmq/lib/rabbitmq_server-3.5.5/plugins/autocluster-0.4.1.ez"
+#      networks:
+#        - backend
+
+### Elastic search Setup ############################################
+
+    # elasticsearch:
+    #   container_name: elasticsearch      
+    #   image: elasticsearch:latest
     #   ports:
-    #     - "15672:15672"
-    #     - "5672:5672"
-    #   labels:
-    #     NAME: "rabbitmq"
+    #     - "9200:9200"
     #   volumes:
-    #     - ./backup/rabbitmq:/var/lib/rabbitmq
-    #     #- "./docker/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins"
-    #     #- "./docker/rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro"
-    #     #- "./docker/rabbitmq/autocluster-0.4.1.ez:/usr/lib/rabbitmq/lib/rabbitmq_server-3.5.5/plugins/autocluster-0.4.1.ez"
+    #     - ./backup/eldata:/eldata
+    #   networks:
+    #     - backend
+
+### kibana Setup ############################################
+    # kibana:
+    #   container_name: kibana  
+    #   image: kibana:latest
+    #   ports:
+    #     - "5601:5601"
+    #   links:
+    #     - elasticsearch
+    #   volumes:
+    #     - ./backup/eldata:/kibana
     #   networks:
     #     - backend
 
