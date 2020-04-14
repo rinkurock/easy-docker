@@ -56,6 +56,29 @@ services:
         networks:
             - backend
 
+### mysql8 Setup ###########################################
+    mysql8:
+      #image: mysql:8.0
+      container_name: mysql8
+      build:
+        context: ./docker/mysql8
+      ports:
+        - "${DB_PORT_MYSQL_8}:3306"
+      environment:
+        - MYSQL_DATABASE=${DB_DATABASE}
+        - MYSQL_USER=${DB_USERNAME}
+        - MYSQL_PASSWORD=${DB_PASSWORD}
+        - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+        - TZ=${DB_TIMEZONE}
+      volumes:
+        - ./docker/mysql8/conf.d:/etc/mysql/conf.d:ro
+        - ./docker/mysql8/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+        #- ./docker/mysql8/initdb.d:/docker-entrypoint-initdb.d:ro
+        - ./backup/mysql8/logs:/var/log/mysql:rw
+        - ./backup/mysql8/data:/var/lib/mysql
+      networks:  
+        - backend
+
 ### mysql Setup ############################################
 
     mysql:

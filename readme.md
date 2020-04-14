@@ -62,7 +62,7 @@ docker-compose ps
 * Vertual Host with nginx
 * PHP FPM
 * PHP version 5.6, 7.0, 7.1, 7.2 etc
-* MySql
+* MySql 5.7, 8.0.19
 * Postgres
 * Adminer
 * Redis

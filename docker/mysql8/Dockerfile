@@ -1,11 +1,12 @@
-FROM mysql:5.7
+FROM mysql:8.0.19
 
 MAINTAINER RINKU <rinku.arnob@gmail.com>
 
 RUN chown -R mysql:root /var/lib/mysql/
 
-ADD my.cnf /etc/mysql/conf.d/my.cnf
+ADD conf.d/my.cnf /etc/mysql/conf.d/my.cnf
 
 CMD ["mysqld"]
 
-EXPOSE 3306
+EXPOSE 3306 33060
+

@@ -1,6 +1,6 @@
 FROM nginx:alpine
 
-MAINTAINER Mahmoud Zalt <mahmoud@zalt.me>
+MAINTAINER RINKU <rinku.arnob@gmail.com>
 
 ADD nginx.conf /etc/nginx/
 

@@ -6,7 +6,7 @@
 
 FROM php:7.1-fpm
 
-MAINTAINER Rinku Rock <rinku.arnob@gmail.com>
+MAINTAINER RINKU <rinku.arnob@gmail.com>
 
 #
 #--------------------------------------------------------------------------
