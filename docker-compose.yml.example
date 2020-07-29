@@ -110,6 +110,8 @@ services:
     image: adminer:${ADMINER_VERSION}-standalone
     ports:
       - ${ADMINER_PORT}:8080
+    env_file:
+      - .env
     links:
       - mysql
 #      - postgres:db
