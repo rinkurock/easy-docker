@@ -5,7 +5,7 @@ An easy way to maintain PHP version with some essential config like as virtual H
 
 1. Clone the easy-docker github repository
 ```Bash
-git clone https://github.com/rinkurock/easy-docker
+git clone https://github.com/rinkurock/easy-docker ~/easy-docker
 ```
 
 2. Go to easy-docker directory
@@ -23,7 +23,7 @@ cp .env.example .env
 cp docker-compose.yml.example docker-compose.yml
 ```
 
-5. Edit  APPLICATION=/your-root-project-directory & database setting on .env file 
+5. Edit  APPLICATION=/your-root-project-directory & database setting on .env file
 ```Bash
 nano .env
 ```
@@ -33,7 +33,7 @@ nano .env
 docker-compose up -d
 ```
 
-7. Go to <http://localhost:9099> on browser
+7. Go to <http://localhost:9999> on browser
 
 
 ## Setup Virtual Host for porject
@@ -43,7 +43,7 @@ Run:
 sudo ./v-host.sh
 ```
 
-and flow the instruction on command line
+and follow the instructions on command line
 
 * sudo for only addning local domain address on /etc/hosts file on your system.
 
@@ -57,6 +57,14 @@ Run:
 ```Bash
 docker-compose ps
 ```
+#### Accessing Globally
+Sometimes you may want to `docker-compose` up your `easy-docker` machine from anywhere on your filesystem. You can do this on Unix systems by adding a Bash function to your Bash profile. These scripts will allow you to run any `docker-compose` command from anywhere on your system and will automatically point that command to your `easy-docker` installation:
+
+```
+function easydocker() {
+    ( cd ~/easy-docker && docker-compose $* )
+}
+```
 
 ## Features
 * Vertual Host with nginx
@@ -66,9 +74,11 @@ docker-compose ps
 * Postgres
 * Adminer
 * Redis
+* Mongo
 * Consul
 * RabbitMq
-
+* Elastic Search
+* Kibana
 
 ## Contribution
 All issues, PRs and advices are more than welcome to discuss about :).
