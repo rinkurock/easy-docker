@@ -4,7 +4,7 @@
 #--------------------------------------------------------------------------
 #
 
-FROM php:5.6-fpm
+FROM php:7.4.10-fpm
 
 MAINTAINER Rinku Rock <rinku.arnob@gmail.com>
 
@@ -33,32 +33,23 @@ RUN apt-get update \
     nano \
     zip unzip \
     libssh2-1-dev \
+    openssl \
+    libxml2-dev \
+    libonig-dev \
   && rm -rf /var/lib/apt/lists/*
 
 
 
-  # Install the PHP pdo_mysql extention
-  RUN docker-php-ext-install pdo_mysql \
-  # Install the PHP pdo_pgsql extention
-  && docker-php-ext-install pdo_pgsql \
-  # Install the PHP gd library
-  && docker-php-ext-configure gd \
-    --enable-gd-native-ttf \
-    --with-jpeg-dir=/usr/lib \
-    --with-freetype-dir=/usr/include/freetype2 && \
-    docker-php-ext-install gd
-
-RUN docker-php-ext-install -j$(nproc) mcrypt \
-    && docker-php-ext-install -j$(nproc) pdo \
-    && docker-php-ext-install mbstring
+# Install the PHP  extention
+RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
 
 #composer setup
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 
-# RUN pecl install -o -f redis \
-#     &&  rm -rf /tmp/pear \
-#     &&  echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
+RUN pecl install -o -f redis \
+    &&  rm -rf /tmp/pear \
+    &&  echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
 
 
 #
@@ -73,4 +64,4 @@ RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Set default work directory
-WORKDIR /var/www
+WORKDIR /var/www/html
