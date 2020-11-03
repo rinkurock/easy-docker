@@ -6,7 +6,7 @@
 
 FROM php:7.4.10-fpm
 
-MAINTAINER Rinku Rock <rinku.arnob@gmail.com>
+LABEL MAINTAINER="Rinku Rock <rinku.arnob@gmail.com>"
 
 #
 #--------------------------------------------------------------------------
@@ -41,7 +41,7 @@ RUN apt-get update \
 
 
 # Install the PHP  extention
-RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd mysqli
 
 #composer setup
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
