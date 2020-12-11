@@ -43,11 +43,9 @@ RUN docker-php-ext-install pdo_mysql \
   && docker-php-ext-install pdo_pgsql \
   # Install the PHP gd library
   && docker-php-ext-configure gd \
-    --enable-gd-native-ttf \
     --with-jpeg-dir=/usr/lib \
     --with-freetype-dir=/usr/include/freetype2 \
   && docker-php-ext-install gd
-
 
 # Configure the PHP mcrypt
 RUN yes | pecl install mcrypt-1.0.2 \
@@ -62,7 +60,7 @@ RUN docker-php-ext-install bcmath \
 
 # Install the mysql-client for mysqldump
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends apt-utils mysql-client
+  && apt-get install -y --no-install-recommends apt-utils
 
 
 # Composer setup

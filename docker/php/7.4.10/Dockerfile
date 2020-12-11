@@ -36,8 +36,12 @@ RUN apt-get update \
     openssl \
     libxml2-dev \
     libonig-dev \
-  && rm -rf /var/lib/apt/lists/*
+    libcurl4-openssl-dev
 
+RUN apt-get install -y \
+        libzip-dev \
+        zip \
+  && docker-php-ext-install zip
 
 
 # Install the PHP  extention
