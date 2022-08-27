@@ -194,31 +194,54 @@ services:
 #    networks:
 #      - backend
 
-### Elastic search Setup ############################################
+# ## Elastic search Setup ############################################
+#   elasticsearch:
+#     container_name: elasticsearch
+#     image: docker.elastic.co/elasticsearch/elasticsearch:8.4.0
+#     restart: always
+#     environment:      
+#       # ES_JAVA_OPTS: -Xms512m -Xmx512m
+#       # discovery.type: single-node
+#       #- cluster.routing.allocation.disk.threshold_enabled=false
+#       - ELASTIC_PASSWORD=changeme
+#       - discovery.type=single-node
+#       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#       - xpack.security.enabled=false
+#       - node.name=elasticsearch-node-1
+#     ulimits:
+#       memlock:
+#         soft: -1
+#         hard: -1
+#       nofile:
+#         soft: 65536
+#         hard: 65536
+#     cap_add:
+#       - IPC_LOCK
+#     volumes:
+#       - ./backup/elasticsearch/data:/usr/share/elasticsearch/data
+#     ports:
+#       - 9200:9200
+#       - 9300:9300
+#     networks:
+#       - backend
 
-#  elasticsearch:
-#    container_name: elasticsearch
-#    image: elasticsearch:latest
-#    ports:
-#      - "9200:9200"
-#    volumes:
-#      - ./backup/eldata:/eldata
-#    networks:
-#      - backend
-
-### kibana Setup ############################################
-
-#  kibana:
-#    container_name: kibana
-#    image: kibana:latest
-#    ports:
-#      - "5601:5601"
-#    links:
-#      - elasticsearch
-#    volumes:
-#      - ./backup/eldata:/kibana
-#    networks:
-#      - backend
+# ## kibana Setup ############################################
+#   kibana:
+#     container_name: kibana
+#     image: docker.elastic.co/kibana/kibana:8.4.0
+#     restart: always
+#     ports:
+#       - 5601:5601
+#     links:
+#       - elasticsearch
+#     environment:
+#       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+#     # volumes:
+#     #   - ./backup/kibana:/kibana
+#     networks:
+#       - backend
+#     depends_on:
+#       - elasticsearch
 
 ### Networks Setup ############################################
 
