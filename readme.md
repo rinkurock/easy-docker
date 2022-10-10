@@ -69,7 +69,7 @@ function easydocker() {
 ## Features
 * Vertual Host with nginx
 * PHP FPM
-* PHP version 5.6, 7.0, 7.1, 7.2,7.3.22,7.4.10 etc
+* PHP version 5.5.34, 5.6, 7.0, 7.1, 7.1.3, 7.2, 7.3.22, 7.4.13, 8.1.0 etc
 * MySql 5.7, 8.0.19
 * Postgres
 * Adminer

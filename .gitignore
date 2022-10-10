@@ -3,5 +3,6 @@ logs
 .idea
 .DS_Store
 docker-compose.yml
+own.yml
 .vscode
 /docker/php/custom.ini

@@ -4,7 +4,7 @@
 #--------------------------------------------------------------------------
 #
 
-FROM php:7.4.10-fpm
+FROM php:8.1.0-fpm
 
 LABEL MAINTAINER="Rinku Rock <rinku.arnob@gmail.com>"
 
