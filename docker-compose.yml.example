@@ -87,6 +87,8 @@ services:
 ### mysql Setup ############################################
 
   mysql:
+    # FOR (M1 MAC)ADD NEXT LINE
+    #platform: linux/x86_64
     container_name: mysql
     build:
       context: ./docker/mysql
