@@ -244,6 +244,27 @@ services:
 #     depends_on:
 #       - elasticsearch
 
+## beanstalkd Setup ############################################
+  beanstalkd:
+    container_name: beanstalkd
+    image: schickling/beanstalkd
+    ports:
+      - 11300:11300
+    volumes:
+      - ~/.backup/beanstalkd/data/bidzauto:/binlog
+    networks:
+      - backend
+## beanstalk-console Setup ############################################
+  beanstalk-console:
+    container_name: beanstalkd-console
+    image: schickling/beanstalkd-console:latest
+    ports:
+    - 2080:2080
+    links:
+      - beanstalkd
+    networks:
+      - backend
+
 ### Networks Setup ############################################
 
 networks:
