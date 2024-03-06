@@ -25,6 +25,7 @@ RUN sed -i '/stretch-updates/d' /etc/apt/sources.list
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
+    ca-certificates \
     curl \
     libmemcached-dev \
     libz-dev \
@@ -38,9 +39,15 @@ RUN apt-get update \
     nano \
     zip unzip \
     libssh2-1-dev \
+  && sed -i '/^mozilla\/DST_Root_CA_X3.crt$/ s/^/!/' /etc/ca-certificates.conf \  
+  && update-ca-certificates \
   && rm -rf /var/lib/apt/lists/*
 
-
+# RUN apt-get update -qq \
+#     && apt-get install -y ca-certificates \
+#     && sed -i '/^mozilla\/DST_Root_CA_X3.crt$/ s/^/!/' /etc/ca-certificates.conf \
+#     && update-ca-certificates \
+#     && rm -rf /var/lib/apt/lists/*
 
   # Install the PHP pdo_mysql extention
   RUN docker-php-ext-install pdo_mysql \
