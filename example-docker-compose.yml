@@ -9,6 +9,31 @@ services:
       - /Users/n3m0/.ssh:/root/.ssh
       - ${APPLICATION}:/var/www
 
+### Run GO Application ############################################
+  # app:
+  #   platform: linux/x86_64
+  #   image: docker-repo-url
+  #   container_name: go_stage
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - GO111MODULE=on
+  #     - CONSUL=false
+  #     - CONSUL_URL=127.0.0.1:8500
+  #     - CONSUL_PATH=test
+  #     - CONFIG_JSON=/src/bin/app/stage.json
+  #   command: serve  # Run the 'serve' command when the container starts
+  #   links:
+  #     - postgres
+  #     - redis
+  #   networks:
+  #     - backend
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  # volumes:
+  #   - ./stage.json:/src/bin/app/stage.json
+
 ### nginx Setup for virtual host ############################################
 
   nginx:
@@ -121,19 +146,27 @@ services:
 
 ### postgres Setup ############################################
 
-#  postgres:
-#    container_name: postgres
-#    image: postgres:10.1
-#    ports:
-#      - 5432:5432
-#    volumes:
-#      - ./backup/postgres/database:/var/lib/postgresql/data
-#    environment:
-#      - POSTGRES_USER=${POSTGRES_USER}
-#      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-#      - POSTGRES_DB=${POSTGRES_DB}
-#    networks:
-#      - backend
+## postgres Setup ############################################
+  # postgres:
+  #  platform: "linux/amd64"
+  #  container_name: postgres
+  #  image: postgres:13.16
+  #  command: ["postgres", "-c", "log_statement=all"]
+  #  ports:
+  #    - 5432:5432
+  #  healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_DB}"]  # PostgreSQL health check command
+  #     interval: 10s  # Interval between health checks
+  #     timeout: 5s    # Timeout for each health check
+  #     retries: 5     # Number of retries before marking as unhealth
+  #  volumes:
+  #    - ./backup/postgres_thirteen/database:/var/lib/postgresql/data
+  #  environment:
+  #    - POSTGRES_USER=${POSTGRES_USER}
+  #    - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  #    - POSTGRES_DB=${POSTGRES_DB}
+  #  networks:
+  #    - backend
 
 ### Redis Setup ############################################
 
@@ -142,6 +175,8 @@ services:
     image: redis:latest
     ports:
       - ${REDEIS_PORT}:6379
+    command: >
+      --requirepass ${REDIS_PASSWORD}
     volumes:
       - ./backup/redis/data:/data
     networks:

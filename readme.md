@@ -20,7 +20,7 @@ cp .env.example .env
 
 4. Copy docker-compose.yml.example to docker-compose.yml
 ```Bash
-cp docker-compose.yml.example docker-compose.yml
+cp example-docker-compose.yml docker-compose.yml
 ```
 
 5. Edit  APPLICATION=/your-root-project-directory & database setting on .env file
@@ -36,7 +36,7 @@ docker-compose up -d
 7. Go to <http://localhost:9999> on browser
 
 
-## Setup Virtual Host for porject
+## Setup Virtual Host for project
 Run:
 
 ```Bash
@@ -45,7 +45,7 @@ sudo ./v-host.sh
 
 and follow the instructions on command line
 
-* sudo for only addning local domain address on /etc/hosts file on your system.
+* sudo for only adding local domain address on /etc/hosts file on your system.
 
 You can check it by run:
 ```Bash
